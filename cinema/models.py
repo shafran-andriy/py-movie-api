@@ -1,0 +1,10 @@
+from django.db import models
+
+
+class Cinema(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    duration = models.DateTimeField()
+
+    class Meta:
+        verbose_name_plural = "cinemas"
