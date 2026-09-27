@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 
-from cinema.models import Cinema
-from cinema.serializers import CinemaSerializer
+from cinema.models import Movie
+from cinema.serializers import MovieSerializer
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,12 +11,12 @@ from rest_framework import status
 @api_view(["GET", "POST"])
 def cinema_list(request):
     if request.method == "GET":
-        buses = Cinema.objects.all()
-        serializer = CinemaSerializer(buses, many=True)
+        movies = Movie.objects.all()
+        serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        serializer = CinemaSerializer(data=request.data, many=False)
-        if serializer.is_valid():
+        serializer = MovieSerializer(data=request.data, many=False)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -24,17 +24,16 @@ def cinema_list(request):
 
 @api_view(["GET", "PUT", "DELETE"])
 def cinema_detail(request, pk):
-    bus = get_object_or_404(Cinema, pk=pk)
+    movie = get_object_or_404(Movie, pk=pk)
     if request.method == "GET":
-        serializer = CinemaSerializer(bus, many=False)
+        serializer = MovieSerializer(movie, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        # return JsonResponse(serializer.data, status=200)
     elif request.method == "PUT":
-        serializer = CinemaSerializer(bus, data=request.data)
-        if serializer.is_valid():
+        serializer = MovieSerializer(movie, data=request.data)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
-        cinema.delete()
+        movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
